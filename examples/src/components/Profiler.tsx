@@ -1,32 +1,37 @@
-import { ReactNode, useContext, useLayoutEffect } from "react";
+import {
+  ReactNode,
+  useContext,
+  useLayoutEffect,
+  useSyncExternalStore,
+} from "react";
 
 import {
-  createConsumer,
   createContainer,
   createSweetContext,
   StoreContext,
   injects,
-  createAction,
 } from "react-sweet-context";
 
-const context = createSweetContext({
+const counterContext = createSweetContext({
   initState: 0,
   action({ set }) {
     return set;
   },
 });
 
-const Container = createContainer(context);
-const Consumer = createConsumer(context);
-const useCouter = createAction(context);
+const Container = createContainer(counterContext);
 
-injects.hook.listen(() => {
-  const setCount = useCouter();
+const injectFn = () => {
+  const { action } = useContext(counterContext);
 
   useLayoutEffect(() => {
-    setCount((c) => c + 1);
+    action((c) => c + 1);
   });
-});
+};
+
+injects.hook.listen(injectFn);
+injects.action.listen(injectFn);
+injects.consumer.listen(injectFn);
 
 type ProfilerProps = {
   title: string;
@@ -34,24 +39,31 @@ type ProfilerProps = {
   context: StoreContext<any, any>;
 };
 
-export const Profiler = ({ title, children, context }: ProfilerProps) => {
+const ProfilerDetail = ({ context }: { context: StoreContext<any, any> }) => {
   const instance = useContext(context);
+  const counter = useContext(counterContext);
+  const count = useSyncExternalStore(
+    counter.listen.bind(counter),
+    () => counter.value
+  );
+  return (
+    <div className="console">
+      <small>Count render: {count}</small>
+      <small style={{ marginLeft: 20 }}>
+        Global State: {JSON.stringify(instance.value)}
+      </small>
+    </div>
+  );
+};
+
+export const Profiler = ({ title, children, context }: ProfilerProps) => {
   return (
     <Container>
       <div className="example-content">
         <div className="title">{title}</div>
         {children}
         <hr />
-        <Consumer>
-          {(count) => (
-            <div className="console">
-              <small>Count render: {count}</small>
-              <small style={{ marginLeft: 20 }}>
-                Global State: {JSON.stringify(instance.value)}
-              </small>
-            </div>
-          )}
-        </Consumer>
+        <ProfilerDetail context={context} />
       </div>
     </Container>
   );
