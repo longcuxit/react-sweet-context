@@ -23,7 +23,6 @@ import {
   useMemo,
   useSyncExternalStore,
   type Context,
-  type FC,
   type PropsWithChildren,
   type ReactNode,
 } from "react";
@@ -32,13 +31,12 @@ import { ValueChanged } from "./ValueChanged";
 
 // Local function implementation
 function isPlainObject(value: any): boolean {
-  if (typeof value !== 'object' || value === null) {
+  if (typeof value !== "object" || value === null) {
     return false;
   }
   const prototype = Object.getPrototypeOf(value);
   return !prototype || prototype === Object.prototype;
 }
-
 
 /**
  * Type for determining the return type of state selectors.
@@ -53,9 +51,9 @@ type SetStateAction<S> = ShouldReturn<S> | ((prevState: S) => ShouldReturn<S>);
 /**
  * Configuration for store container lifecycle events.
  */
-type SweetContextContainerConfig<S, A, P = object> = {
-  onInit?(api: SweetContextApi<S>, action: A, props: P): void;
-  onUpdate?(api: SweetContextApi<S>, action: A, props: P, prev: P): void;
+type SweetContainerConfig<S, A, P = object> = {
+  onInit?(api: SweetApi<S>, action: A, props: P): void;
+  onUpdate?(api: SweetApi<S>, action: A, props: P, prev: P): void;
 };
 
 /**
@@ -66,15 +64,18 @@ type StateSelector<S, V, Args extends unknown[] = []> = (
   ...args: Args
 ) => V;
 
-
-export type StoreContext<S, A> = Context<StoreInstance<S, A>>
-export type StoreState<S> = S extends StoreContext<infer S, unknown> ? S : never
-export type StoreAction<S> = S extends StoreContext<unknown, infer A> ? A : never
+export type StoreContext<S, A> = Context<StoreInstance<S, A>>;
+export type StoreState<S> = S extends StoreContext<infer S, unknown>
+  ? S
+  : never;
+export type StoreAction<S> = S extends StoreContext<unknown, infer A>
+  ? A
+  : never;
 
 /**
  * API interface for interacting with store state and actions.
  */
-export type SweetContextApi<S> = {
+export type SweetApi<S> = {
   /**
    * Get the current state value.
    * @returns The current state
@@ -91,7 +92,7 @@ export type SweetContextApi<S> = {
 /**
  * Configuration for creating a new store instance.
  */
-export type SweetContextProps<S, A> = {
+export type SweetStoreProps<S, A> = {
   /**
    * Optional name for the store (used for debugging).
    */
@@ -105,7 +106,7 @@ export type SweetContextProps<S, A> = {
   /**
    * Action creator function that returns action methods for the store.
    */
-  action: (api: SweetContextApi<S>, initState: S) => A;
+  action: (api: SweetApi<S>, initState: S) => A;
 };
 
 /**
@@ -139,11 +140,11 @@ function getActionState<S>(state: SetStateAction<S>, value: S) {
 /**
  * Internal class that manages store data and subscriptions.
  */
-class StoreInstance<S, A> extends ValueChanged<S> {
+export class StoreInstance<S, A> extends ValueChanged<S> {
   readonly action!: A;
-  readonly api!: SweetContextApi<S>;
+  readonly api!: SweetApi<S>;
 
-  constructor({ initState, action }: SweetContextProps<S, A>) {
+  constructor({ initState, action }: SweetStoreProps<S, A>) {
     const state = copyVariable(initState);
     super(state);
 
@@ -153,7 +154,7 @@ class StoreInstance<S, A> extends ValueChanged<S> {
       get: () => this.value,
       set: isPlainObject(initState)
         ? (state) =>
-          setValue({ ...this.value, ...getActionState(state, this.value) })
+            setValue({ ...this.value, ...getActionState(state, this.value) })
         : (state) => setValue(getActionState(state, this.value) as S),
     };
 
@@ -176,7 +177,9 @@ function shallowEqual<T extends {}>(
   objB: T,
   ignoreKeys: (keyof T)[] = []
 ): boolean {
-  const keys = (Object.keys(objA) as (keyof T)[]).filter((key) => !ignoreKeys.includes(key));
+  const keys = (Object.keys(objA) as (keyof T)[]).filter(
+    (key) => !ignoreKeys.includes(key)
+  );
 
   for (const key of keys) {
     if (objA[key] !== objB[key]) return false;
@@ -193,8 +196,7 @@ const storeProps = new WeakMap();
  * @param props - Configuration for creating the store
  * @returns Store API with methods to create containers, consumers and hooks
  */
-export function createSweetContext<S, A>(props: SweetContextProps<S, A>
-) {
+export function createSweetContext<S, A>(props: SweetStoreProps<S, A>) {
   /**
    * Creates an instance of the store with the provided configuration.
    */
@@ -205,13 +207,13 @@ export function createSweetContext<S, A>(props: SweetContextProps<S, A>
   const Context = createContext(new StoreInstance(props));
   Context.displayName = props.name;
 
-  storeProps.set(Context, Object.freeze(props))
-  return Context
+  storeProps.set(Context, Object.freeze(props));
+  return Context;
 }
 
-
-export function createContainer<S, A, P extends Record<string, unknown>>(context: StoreContext<S, A>,
-  config: SweetContextContainerConfig<S, A, P> = {}
+export function createContainer<S, A, P extends Record<string, unknown>>(
+  context: StoreContext<S, A>,
+  config: SweetContainerConfig<S, A, P> = {}
 ) {
   class Container extends Component<PropsWithChildren<P>> {
     static displayName = shouldNamed(context.displayName!, "Container");
@@ -238,7 +240,7 @@ export function createContainer<S, A, P extends Record<string, unknown>>(context
       return true;
     }
 
-    override render(): ReactNode {
+    override render() {
       return createElement(
         context.Provider,
         { value: this.instance },
@@ -251,33 +253,37 @@ export function createContainer<S, A, P extends Record<string, unknown>>(context
 }
 /**
  * create a hook that provides access to store state and actions.
- * 
+ *
  * @param context - is context of store
  * @param selector - optional function that returns selcted state
  * @returns [state, actions]
  */
 
-export function createHook<S, A, V = S, Args extends unknown[] = []>(context: StoreContext<S, A>, selector: StateSelector<S, V, Args> = selfSelector) {
+export function createHook<S, A, V = S, Args extends unknown[] = []>(
+  context: StoreContext<S, A>,
+  selector: StateSelector<S, V, Args> = selfSelector
+) {
   return function useStore(...args: Args): [V, A] {
     const instance = useContext(context);
-    const value = useSyncExternalStore(
-      instance.listen.bind(instance),
-      () => selector(instance.value, ...args)
+    const value = useSyncExternalStore(instance.listen.bind(instance), () =>
+      selector(instance.value, ...args)
     );
 
     return [value, instance.action];
   };
 }
 
-
 /**
  * create a useAction to access action of store no listen change rerender
- * 
+ *
  * @param context - is context of store
  * @param selector - optional function that returns selcted action
- * @returns 
+ * @returns
  */
-export function createAction<S, A, R = A, Args extends readonly unknown[] = []>(context: StoreContext<S, A>, selector?: (action: A, ...args: Args) => R): (...args: Args) => R {
+export function createAction<S, A, R = A, Args extends readonly unknown[] = []>(
+  context: StoreContext<S, A>,
+  selector?: (action: A, ...args: Args) => R
+): (...args: Args) => R {
   if (!selector) return () => selfSelector(useContext(context).action);
 
   return function useAction(...args: Args): R {
@@ -286,14 +292,18 @@ export function createAction<S, A, R = A, Args extends readonly unknown[] = []>(
   };
 }
 
-export function createConsumer<S, A, V = S>(context: StoreContext<S, A>, selector: (state: S) => V = selfSelector) {
-  const Consumer: FC<{
+export function createConsumer<S, A, V = S>(
+  context: StoreContext<S, A>,
+  selector: (state: S) => V = selfSelector
+) {
+  type ConsumerProps = {
     children: (state: V, action: A) => ReactNode;
-  }> = ({ children }) => {
+  };
+
+  const Consumer = ({ children }: ConsumerProps) => {
     const instance = useContext(context);
-    const value = useSyncExternalStore(
-      instance.listen.bind(instance),
-      () => selector(instance.value)
+    const value = useSyncExternalStore(instance.listen.bind(instance), () =>
+      selector(instance.value)
     );
 
     return children(value, instance.action);

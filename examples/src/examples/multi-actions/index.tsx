@@ -1,0 +1,25 @@
+import React from "react";
+import { Counter, Increase, context } from "./source";
+import source from "./source.tsx?raw";
+import { Profiler } from "src/components/Profiler";
+import { CodePreview } from "src/components/CodePreview";
+
+const Example: React.FC = () => {
+  return (
+    <div>
+      <p>This is a basic example showing the core functionality.</p>
+
+      <Profiler title="Using hook by createHook" context={context}>
+        <Counter />
+      </Profiler>
+
+      <Profiler title="Using selected 'increase' action" context={context}>
+        <Increase />
+      </Profiler>
+
+      <CodePreview source={source} />
+    </div>
+  );
+};
+
+export default Example;

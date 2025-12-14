@@ -1,15 +1,12 @@
 {
   "name": "react-sweet-context",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A lightweight React store implementation",
-  "main": "dist/index.cjs",
-  "module": "dist/index.js",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
   "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    }
+    ".": "./dist/index.js"
   },
   "files": [
     "dist"
@@ -27,7 +24,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/longcuxit/react-sweet-context.git"
+    "url": "git+https://github.com/longcuxit/react-sweet-context.git"
   },
   "scripts": {
     "build": "tsup"

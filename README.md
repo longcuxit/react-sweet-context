@@ -31,7 +31,7 @@ type User = {
 const initialState: User = {
   id: 0,
   name: "guest",
-  email: ""
+  email: "",
 };
 
 // Create the context
@@ -47,7 +47,7 @@ const userContext = createSweetContext({
     },
     resetUser: () => {
       set(initialState);
-    }
+    },
   }),
 });
 
@@ -62,7 +62,7 @@ import { useUser } from "./stores/UserStore";
 
 function UserProfile() {
   const [user, actions] = useUser();
-  
+
   return (
     <div>
       <p>Name: {user.name}</p>
@@ -82,9 +82,10 @@ function UserProfile() {
 
 ### `createSweetContext(props)`
 
-Creates a new lightweight store instance.
+Create a lightweight store instance that is the default value of the context; each time a Container is rendered, a new store instance will be created.
 
 **Parameters:**
+
 - `props` - Configuration object with:
   - `name?`: Optional name for debugging
   - `initState`: Initial state value to be used for the store
@@ -95,6 +96,7 @@ Creates a new lightweight store instance.
 Creates a React hook that provides access to store state and actions.
 
 **Parameters:**
+
 - `context`: The store context created by `createSweetContext`
 - `selector?`: Optional function to extract specific values from state
 
@@ -103,6 +105,7 @@ Creates a React hook that provides access to store state and actions.
 Creates a React hook that provides access to store actions without subscribing to state changes.
 
 **Parameters:**
+
 - `context`: The context created by `createSweetContext`
 - `selector?`: Optional function to extract specific action methods from the store
 
@@ -111,16 +114,38 @@ Creates a React hook that provides access to store actions without subscribing t
 Creates a React Consumer component that provides access to store state and actions.
 
 **Parameters:**
+
 - `context`: The context created by `createSweetContext`
 - `selector?`: Optional function to extract specific values from state
 
-### `createContainer(context, selector)`
+### `createContainer(context, config)`
 
 Creates a React component that provides access to store state and actions.
 
 **Parameters:**
+
 - `context`: The context created by `createSweetContext`
-- `selector?`: Optional function to extract specific values from state
+- `config?`: Optional configuration object for container lifecycle events
+
+**Configuration Object:**
+
+The `config` parameter allows you to hook into the container's lifecycle events:
+
+- `onInit?(api, action, props)`: Called when the container is initialized. Receives:
+
+  - `api`: The store API for state manipulation
+  - `action`: The action methods for the store
+  - `props`: The container's props
+
+- `onUpdate?(api, action, props, prev)`: Called when the container's props are updated. Receives:
+  - `api`: The store API for state manipulation
+  - `action`: The action methods for the store
+  - `props`: The new props
+  - `prev`: The previous props
+
+**Returns:**
+
+- A React component that wraps children with store provider
 
 ## Installation
 
@@ -131,6 +156,7 @@ bun install react-sweet-context
 ## Performance Considerations
 
 ### Shallow Equality Checking
+
 React SweetContext uses shallow equality checking to optimize re-renders:
 
 ```typescript
@@ -139,6 +165,7 @@ const useUser = createHook(context);
 ```
 
 ### Custom Selectors
+
 Use custom selectors to extract only necessary data:
 
 ```typescript
