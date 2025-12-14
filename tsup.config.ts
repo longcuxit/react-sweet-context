@@ -7,5 +7,10 @@ export default defineConfig({
   dts: true,
   clean: true,
 
-  external: [...Object.keys(pkg.devDependencies ?? {})],
+  external: [
+    "react",
+    "react-dom",
+    ...Object.keys(pkg.devDependencies ?? {}),
+    ...Object.keys(pkg.peerDependencies ?? {}),
+  ],
 });
