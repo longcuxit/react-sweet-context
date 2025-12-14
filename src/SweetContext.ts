@@ -28,6 +28,7 @@ import {
 } from "react";
 
 import { ValueChanged } from "./ValueChanged";
+import { Notifier } from "./Notifier";
 
 // Local function implementation
 function isPlainObject(value: any): boolean {
@@ -140,7 +141,7 @@ function getActionState<S>(state: SetStateAction<S>, value: S) {
 /**
  * Internal class that manages store data and subscriptions.
  */
-export class StoreInstance<S, A> extends ValueChanged<S> {
+class StoreInstance<S, A> extends ValueChanged<S> {
   readonly action!: A;
   readonly api!: SweetApi<S>;
 
@@ -188,6 +189,19 @@ function shallowEqual<T extends {}>(
   return true;
 }
 
+class Inject extends Notifier<[StoreInstance<any, any>]> {
+  emit(instance: StoreInstance<any, any>) {
+    this.notify(instance);
+  }
+}
+
+export const injects = {
+  hook: new Inject(),
+  action: new Inject(),
+  container: new Inject(),
+  consumer: new Inject(),
+};
+
 const storeProps = new WeakMap();
 
 /**
@@ -225,6 +239,8 @@ export function createContainer<S, A, P extends Record<string, unknown>>(
       if (config.onInit) {
         config.onInit(this.instance.api, this.instance.action, props);
       }
+
+      injects.container.emit(this.instance);
     }
 
     override shouldComponentUpdate(nextProps: Readonly<P>): boolean {
@@ -268,7 +284,7 @@ export function createHook<S, A, V = S, Args extends unknown[] = []>(
     const value = useSyncExternalStore(instance.listen.bind(instance), () =>
       selector(instance.value, ...args)
     );
-
+    injects.hook.emit(instance);
     return [value, instance.action];
   };
 }
@@ -284,10 +300,16 @@ export function createAction<S, A, R = A, Args extends readonly unknown[] = []>(
   context: StoreContext<S, A>,
   selector?: (action: A, ...args: Args) => R
 ): (...args: Args) => R {
-  if (!selector) return () => selfSelector(useContext(context).action);
+  if (!selector)
+    return () => {
+      const instance = useContext(context);
+      injects.action.emit(instance);
+      return selfSelector(instance.action);
+    };
 
   return function useAction(...args: Args): R {
     const instance = useContext(context);
+    injects.action.emit(instance);
     return useMemo(() => selector(instance.action, ...args), args);
   };
 }
@@ -305,6 +327,7 @@ export function createConsumer<S, A, V = S>(
     const value = useSyncExternalStore(instance.listen.bind(instance), () =>
       selector(instance.value)
     );
+    injects.action.emit(instance);
 
     return children(value, instance.action);
   };

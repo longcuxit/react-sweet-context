@@ -119,6 +119,15 @@ declare class StoreInstance<S, A> extends ValueChanged<S> {
     readonly api: SweetApi<S>;
     constructor({ initState, action }: SweetStoreProps<S, A>);
 }
+declare class Inject extends Notifier<[StoreInstance<any, any>]> {
+    emit(instance: StoreInstance<any, any>): void;
+}
+declare const injects: {
+    hook: Inject;
+    action: Inject;
+    container: Inject;
+    consumer: Inject;
+};
 /**
  * Creates a new lightweight store instance with the provided configuration.
  *
@@ -175,4 +184,4 @@ declare function createConsumer<S, A, V = S>(context: StoreContext<S, A>, select
     displayName: string;
 };
 
-export { Notifier, type NotifierListener, type StoreAction, type StoreContext, StoreInstance, type StoreState, type SweetApi, type SweetStoreProps, ValueChanged, createAction, createConsumer, createContainer, createHook, createSweetContext };
+export { Notifier, type NotifierListener, type StoreAction, type StoreContext, type StoreState, type SweetApi, type SweetStoreProps, ValueChanged, createAction, createConsumer, createContainer, createHook, createSweetContext, injects };

@@ -7,15 +7,8 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
     base: env.VITE_BASE_URL,
-    define: {
-      "process.env.NODE_ENV": '"production"',
-    },
     resolve: {
-      alias: {
-        src: path.resolve("./src"),
-        "react-dom$": "react-dom/profiling",
-        "scheduler/tracing": "scheduler/tracing-profiling",
-      },
+      alias: { src: path.resolve("./src") },
     },
   };
 });

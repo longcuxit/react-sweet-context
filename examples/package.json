@@ -6,13 +6,13 @@
   "scripts": {
     "start": "vite",
     "build": "vite build",
+    "dist": "live-server dist --mount=/react-sweet-context:dist",
     "dev": "vite"
   },
   "dependencies": {
     "prismjs": "^1.30.0",
     "react-dom": "^19.2.3",
-    "react-router-dom": "^6.8.0",
-    "react-sweet-context": "^2.0.2"
+    "react-router-dom": "^6.8.0"
   },
   "devDependencies": {
     "@types/prismjs": "^1.26.5",

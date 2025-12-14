@@ -10,6 +10,7 @@ var Notifier = class {
    * @protected
    */
   notify(...args) {
+    if (!this._listeners.length) return;
     this._listeners.slice(0).forEach((listener) => listener.apply(this, args));
   }
   /**
@@ -119,6 +120,17 @@ function shallowEqual(objA, objB, ignoreKeys = []) {
   }
   return true;
 }
+var Inject = class extends Notifier {
+  emit(instance) {
+    this.notify(instance);
+  }
+};
+var injects = {
+  hook: new Inject(),
+  action: new Inject(),
+  container: new Inject(),
+  consumer: new Inject()
+};
 var storeProps = /* @__PURE__ */ new WeakMap();
 function createSweetContext(props) {
   props.name = props.name || "SweetContext";
@@ -137,6 +149,7 @@ function createContainer(context, config = {}) {
       if (config.onInit) {
         config.onInit(this.instance.api, this.instance.action, props);
       }
+      injects.container.emit(this.instance);
     }
     shouldComponentUpdate(nextProps) {
       if (!config.onUpdate) return false;
@@ -166,13 +179,20 @@ function createHook(context, selector = selfSelector) {
       instance.listen.bind(instance),
       () => selector(instance.value, ...args)
     );
+    injects.hook.emit(instance);
     return [value, instance.action];
   };
 }
 function createAction(context, selector) {
-  if (!selector) return () => selfSelector(useContext(context).action);
+  if (!selector)
+    return () => {
+      const instance = useContext(context);
+      injects.action.emit(instance);
+      return selfSelector(instance.action);
+    };
   return function useAction(...args) {
     const instance = useContext(context);
+    injects.action.emit(instance);
     return useMemo(() => selector(instance.action, ...args), args);
   };
 }
@@ -183,6 +203,7 @@ function createConsumer(context, selector = selfSelector) {
       instance.listen.bind(instance),
       () => selector(instance.value)
     );
+    injects.action.emit(instance);
     return children(value, instance.action);
   };
   Consumer.displayName = shouldNamed(context.displayName, "Consumer");
@@ -190,11 +211,11 @@ function createConsumer(context, selector = selfSelector) {
 }
 export {
   Notifier,
-  StoreInstance,
   ValueChanged,
   createAction,
   createConsumer,
   createContainer,
   createHook,
-  createSweetContext
+  createSweetContext,
+  injects
 };

@@ -1,15 +1,32 @@
+import { ReactNode, useContext, useLayoutEffect } from "react";
+
 import {
-  Profiler as ReactProfiler,
-  ReactNode,
-  useCallback,
-  useState,
-  useMemo,
-  useContext,
-} from "react";
+  createConsumer,
+  createContainer,
+  createSweetContext,
+  StoreContext,
+  injects,
+  createAction,
+} from "react-sweet-context";
 
-import { StoreContext } from "react-sweet-context";
+const context = createSweetContext({
+  initState: 0,
+  action({ set }) {
+    return set;
+  },
+});
 
-// type CastContext<T>
+const Container = createContainer(context);
+const Consumer = createConsumer(context);
+const useCouter = createAction(context);
+
+injects.hook.listen(() => {
+  const setCount = useCouter();
+
+  useLayoutEffect(() => {
+    setCount((c) => c + 1);
+  });
+});
 
 type ProfilerProps = {
   title: string;
@@ -18,29 +35,24 @@ type ProfilerProps = {
 };
 
 export const Profiler = ({ title, children, context }: ProfilerProps) => {
-  const [count, setCount] = useState(0);
-  const onRender = useCallback(() => setCount((count) => count + 1), []);
-  const element = useMemo(() => {
-    return (
-      <ReactProfiler id={title} onRender={onRender}>
-        {children}
-      </ReactProfiler>
-    );
-  }, [children, onRender]);
-
   const instance = useContext(context);
-
   return (
-    <div className="example-content">
-      <div className="title">{title}</div>
-      {element}
-      <hr />
-      <div className="console">
-        <small>Count render: {count}</small>
-        <small style={{ marginLeft: 20 }}>
-          Global State: {JSON.stringify(instance.value)}
-        </small>
+    <Container>
+      <div className="example-content">
+        <div className="title">{title}</div>
+        {children}
+        <hr />
+        <Consumer>
+          {(count) => (
+            <div className="console">
+              <small>Count render: {count}</small>
+              <small style={{ marginLeft: 20 }}>
+                Global State: {JSON.stringify(instance.value)}
+              </small>
+            </div>
+          )}
+        </Consumer>
       </div>
-    </div>
+    </Container>
   );
 };

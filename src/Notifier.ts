@@ -18,6 +18,7 @@ export class Notifier<Args extends unknown[] = []> {
    * @protected
    */
   protected notify(...args: Args) {
+    if (!this._listeners.length) return;
     this._listeners.slice(0).forEach((listener) => listener.apply(this, args));
   }
 
