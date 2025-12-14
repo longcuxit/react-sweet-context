@@ -18,7 +18,7 @@ export const routers: Record<string, ExampleItem> = {
     component: MultiActions,
   },
   "multi-states": {
-    title: "Multi States",
+    title: "Multi State",
     component: MultiStates,
   },
   "multi-instance": {

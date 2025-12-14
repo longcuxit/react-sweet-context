@@ -4,7 +4,7 @@ import { useMemo } from "react";
 function countlines(str: string) {
   let count = 0;
   for (let i = 0; i < str.length; i++) {
-    if (str.charCodeAt(i) === 10) count++; // '\n'
+    if (str.charCodeAt(i) === 10) count++;
   }
   return count;
 }
