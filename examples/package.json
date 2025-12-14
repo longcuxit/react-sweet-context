@@ -12,7 +12,8 @@
   "dependencies": {
     "prismjs": "^1.30.0",
     "react-dom": "^19.2.3",
-    "react-router-dom": "^6.8.0"
+    "react-router-dom": "^6.8.0",
+    "react-sweet-context": "^2.0.5"
   },
   "devDependencies": {
     "@types/prismjs": "^1.26.5",
