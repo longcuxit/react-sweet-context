@@ -15,7 +15,7 @@ React SweetContext provides an efficient, minimal implementation of the store pa
 
 ## Quick Start
 
-### Creating a Store
+### Creating a Store Context
 
 ```typescript
 import { createSweetContext, createHook } from "react-sweet-context";
@@ -34,9 +34,9 @@ const initialState: User = {
   email: ""
 };
 
-// Create the store
-const userStore = createSweetContext({
-  name: "UserStore", // Optional name for debugging
+// Create the context
+const userContext = createSweetContext({
+  name: "UserContext", // Optional name for debugging
   initState: initialState,
   action: ({ set }) => ({
     updateName: (name: string) => {
@@ -52,7 +52,7 @@ const userStore = createSweetContext({
 });
 
 // Create the hook for component usage
-export const useUser = createHook(userStore);
+export const useUser = createHook(userContext);
 ```
 
 ### Using in Components
@@ -103,7 +103,7 @@ Creates a React hook that provides access to store state and actions.
 Creates a React hook that provides access to store actions without subscribing to state changes.
 
 **Parameters:**
-- `context`: The store context created by `createSweetContext`
+- `context`: The context created by `createSweetContext`
 - `selector?`: Optional function to extract specific action methods from the store
 
 ### `createConsumer(context, selector)`
@@ -111,7 +111,15 @@ Creates a React hook that provides access to store actions without subscribing t
 Creates a React Consumer component that provides access to store state and actions.
 
 **Parameters:**
-- `context`: The store context created by `createSweetContext`
+- `context`: The context created by `createSweetContext`
+- `selector?`: Optional function to extract specific values from state
+
+### `createContainer(context, selector)`
+
+Creates a React component that provides access to store state and actions.
+
+**Parameters:**
+- `context`: The context created by `createSweetContext`
 - `selector?`: Optional function to extract specific values from state
 
 ## Installation
@@ -127,7 +135,7 @@ React SweetContext uses shallow equality checking to optimize re-renders:
 
 ```typescript
 // The following will only trigger a re-render if the reference changes
-const useUser = createHook(store);
+const useUser = createHook(context);
 ```
 
 ### Custom Selectors
@@ -135,5 +143,5 @@ Use custom selectors to extract only necessary data:
 
 ```typescript
 // Only re-renders when count changes, not the entire state object
-const useCount = createHook(store, (state) => state.count);
+const useCount = createHook(context, (state) => state.count);
 ```
