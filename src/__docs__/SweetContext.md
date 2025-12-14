@@ -1,10 +1,10 @@
-# LiteStore Documentation
+# SweetContext Documentation
 
 A lightweight React store implementation with minimal dependencies, designed for efficient state management in React applications.
 
 ## Overview
 
-LiteStore provides a custom implementation of the store pattern that offers:
+SweetContext provides a custom implementation of the store pattern that offers:
 - Immutable state management
 - Automatic subscription handling with `useSyncExternalStore`
 - Context-based store access for components
@@ -16,7 +16,7 @@ LiteStore provides a custom implementation of the store pattern that offers:
 ### Creating a Store
 
 ```typescript
-import { createLiteStore, createHook } from "utils/LiteStore";
+import { createSweetContext, createHook } from "react-sweet-context";
 
 // Define your state type
 type User = {
@@ -31,7 +31,7 @@ const initialState: User = {
 };
 
 // Create the store
-const store = createLiteStore({
+const store = createSweetContext({
   name: "UserStore", // Optional name for debugging
   initState: initialState,
   action: ({ set }) => ({
@@ -69,7 +69,7 @@ function UserProfile() {
 
 ## API Reference
 
-### `createLiteStore(props)`
+### `createSweetContext(props)`
 
 Creates a new lightweight store instance.
 
@@ -84,7 +84,7 @@ Creates a new lightweight store instance.
 Creates a React hook that provides access to store state and actions.
 
 **Parameters:**
-- `context`: The store context created by `createLiteStore`
+- `context`: The store context created by `createSweetContext`
 - `selector?`: Optional function to extract specific values from state
 
 ### `createContainer(context, config)`
@@ -118,7 +118,7 @@ Creates a hook for accessing store actions with optional selector.
 ### Store with Complex State
 
 ```typescript
-import { createLiteStore, createHook } from "utils/LiteStore";
+import { createSweetContext, createHook } from "react-sweet-context";
 
 type AppState = {
   loading: boolean;
@@ -126,7 +126,7 @@ type AppState = {
   data: Record<string, any> | null;
 };
 
-const store = createLiteStore({
+const store = createSweetContext({
   name: "AppStore",
   initState: {
     loading: false,
@@ -159,14 +159,14 @@ export const useApp = createHook(store);
 ### Store with Async Actions
 
 ```typescript
-import { createLiteStore, createHook } from "utils/LiteStore";
+import { createSweetContext, createHook } from "react-sweet-context";
 
 type User = {
   id: number;
   name: string;
 };
 
-const store = createLiteStore({
+const store = createSweetContext({
   name: "Auth",
   initState: {
     isLoggedIn: false,
@@ -190,7 +190,7 @@ export const useAuth = createHook(store);
 ### Store with Custom Selectors
 
 ```typescript
-import { createLiteStore, createHook } from "utils/LiteStore";
+import { createSweetContext, createHook } from "react-sweet-context";
 
 type Todo = {
   id: number;
@@ -198,7 +198,7 @@ type Todo = {
   completed: boolean;
 };
 
-const store = createLiteStore({
+const store = createSweetContext({
   name: "Todos",
   initState: {
     todos: [] as Todo[],
@@ -304,7 +304,7 @@ action: ({ set }) => ({
 ## Performance Considerations
 
 ### 1. Shallow Equality Checking
-LiteStore uses shallow equality checking to optimize re-renders:
+SweetContext uses shallow equality checking to optimize re-renders:
 
 ```typescript
 // The following will only trigger a re-render if the reference changes
@@ -325,16 +325,16 @@ const useCount = createHook(store, (state) => state.count);
 
 ```typescript
 import { describe, it, expect } from "vitest";
-import { createLiteStore, createHook } from "../utils/LiteStore";
+import { createSweetContext, createHook } from "../utils/SweetContext";
 
-const store = createLiteStore({
+const store = createSweetContext({
   initState: { count: 0 },
   action: ({ set }) => ({
     increment: () => set((state) => ({ count: state.count + 1 })),
   }),
 });
 
-describe("LiteStore", () => {
+describe("SweetContext", () => {
   it("should create store with initial state", () => {
     const [state, actions] = useCounter();
     expect(state.count).toBe(0);
@@ -374,3 +374,4 @@ updateIf: (condition, update) => {
 batchUpdate: (updates) => {
   set(updates);
 }
+```

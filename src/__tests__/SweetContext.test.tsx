@@ -1,5 +1,5 @@
 import { vi, afterEach, describe, expect, it } from "vitest";
-import { createLiteStore, createAction, createHook, createConsumer, createContainer } from "../LiteStore";
+import { createSweetContext, createAction, createHook, createConsumer, createContainer } from "../SweetContext";
 import { act, render, renderHook } from "@testing-library/react";
 import { createElement, useState } from "react";
 import type {
@@ -31,8 +31,8 @@ export function createDynamicWrapper<P extends Record<string, unknown>>(
 
 
 
-describe("LiteStore: Less store", () => {
-  const store = createLiteStore({
+describe("SweetContext: Less store", () => {
+  const store = createSweetContext({
     initState: 0,
     action({ set, get }) {
       return () => set(get() + 1);
@@ -93,9 +93,9 @@ describe("LiteStore: Less store", () => {
   });
 });
 
-describe("LiteStore", () => {
+describe("SweetContext", () => {
   const initState = { count: 0, name: "test" };
-  const store = createLiteStore({
+  const store = createSweetContext({
     initState,
     action: ({ set, get }) => ({
       increment: () => set((state) => ({ count: state.count + 1 })),

@@ -12,7 +12,7 @@
  * - Action creation support with typed selectors
  * - Shallow equality checking for optimization
  *
- * @module LiteStore
+ * @module SweetContext
  */
 
 import {
@@ -53,9 +53,9 @@ type SetStateAction<S> = ShouldReturn<S> | ((prevState: S) => ShouldReturn<S>);
 /**
  * Configuration for store container lifecycle events.
  */
-type LiteStoreContainerConfig<S, A, P = object> = {
-  onInit?(api: LiteStoreApi<S>, action: A, props: P): void;
-  onUpdate?(api: LiteStoreApi<S>, action: A, props: P, prev: P): void;
+type SweetContextContainerConfig<S, A, P = object> = {
+  onInit?(api: SweetContextApi<S>, action: A, props: P): void;
+  onUpdate?(api: SweetContextApi<S>, action: A, props: P, prev: P): void;
 };
 
 /**
@@ -74,7 +74,7 @@ export type StoreAction<S> = S extends StoreContext<unknown, infer A> ? A : neve
 /**
  * API interface for interacting with store state and actions.
  */
-export type LiteStoreApi<S> = {
+export type SweetContextApi<S> = {
   /**
    * Get the current state value.
    * @returns The current state
@@ -91,7 +91,7 @@ export type LiteStoreApi<S> = {
 /**
  * Configuration for creating a new store instance.
  */
-export type LiteStoreProps<S, A> = {
+export type SweetContextProps<S, A> = {
   /**
    * Optional name for the store (used for debugging).
    */
@@ -105,7 +105,7 @@ export type LiteStoreProps<S, A> = {
   /**
    * Action creator function that returns action methods for the store.
    */
-  action: (api: LiteStoreApi<S>, initState: S) => A;
+  action: (api: SweetContextApi<S>, initState: S) => A;
 };
 
 /**
@@ -141,9 +141,9 @@ function getActionState<S>(state: SetStateAction<S>, value: S) {
  */
 class StoreInstance<S, A> extends ValueChanged<S> {
   readonly action!: A;
-  readonly api!: LiteStoreApi<S>;
+  readonly api!: SweetContextApi<S>;
 
-  constructor({ initState, action }: LiteStoreProps<S, A>) {
+  constructor({ initState, action }: SweetContextProps<S, A>) {
     const state = copyVariable(initState);
     super(state);
 
@@ -193,13 +193,13 @@ const storeProps = new WeakMap();
  * @param props - Configuration for creating the store
  * @returns Store API with methods to create containers, consumers and hooks
  */
-export function createLiteStore<S, A>(props: LiteStoreProps<S, A>
+export function createSweetContext<S, A>(props: SweetContextProps<S, A>
 ) {
   /**
    * Creates an instance of the store with the provided configuration.
    */
 
-  props.name = props.name || "LiteStore";
+  props.name = props.name || "SweetContext";
   props.initState = Object.freeze(props.initState);
 
   const Context = createContext(new StoreInstance(props));
@@ -211,7 +211,7 @@ export function createLiteStore<S, A>(props: LiteStoreProps<S, A>
 
 
 export function createContainer<S, A, P extends Record<string, unknown>>(context: StoreContext<S, A>,
-  config: LiteStoreContainerConfig<S, A, P> = {}
+  config: SweetContextContainerConfig<S, A, P> = {}
 ) {
   class Container extends Component<PropsWithChildren<P>> {
     static displayName = shouldNamed(context.displayName!, "Container");

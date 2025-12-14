@@ -1,10 +1,10 @@
-# React Lite Store
+# React SweetContext
 
 A lightweight, performant state management solution for React applications built with Bun and TypeScript.
 
 ## Overview
 
-React Lite Store provides an efficient, minimal implementation of the store pattern for React applications. Designed to be lightweight and performant, it offers:
+React SweetContext provides an efficient, minimal implementation of the store pattern for React applications. Designed to be lightweight and performant, it offers:
 
 - **Immutable state management** with automatic equality checking
 - **Context-based store access** for components
@@ -18,7 +18,7 @@ React Lite Store provides an efficient, minimal implementation of the store patt
 ### Creating a Store
 
 ```typescript
-import { createLiteStore, createHook } from "react-lite-store";
+import { createSweetContext, createHook } from "react-sweet-context";
 
 // Define your state type
 type User = {
@@ -35,7 +35,7 @@ const initialState: User = {
 };
 
 // Create the store
-const userStore = createLiteStore({
+const userStore = createSweetContext({
   name: "UserStore", // Optional name for debugging
   initState: initialState,
   action: ({ set }) => ({
@@ -80,7 +80,7 @@ function UserProfile() {
 
 ## API Reference
 
-### `createLiteStore(props)`
+### `createSweetContext(props)`
 
 Creates a new lightweight store instance.
 
@@ -95,7 +95,7 @@ Creates a new lightweight store instance.
 Creates a React hook that provides access to store state and actions.
 
 **Parameters:**
-- `context`: The store context created by `createLiteStore`
+- `context`: The store context created by `createSweetContext`
 - `selector?`: Optional function to extract specific values from state
 
 ### `createAction(context, selector)`
@@ -103,7 +103,7 @@ Creates a React hook that provides access to store state and actions.
 Creates a React hook that provides access to store actions without subscribing to state changes.
 
 **Parameters:**
-- `context`: The store context created by `createLiteStore`
+- `context`: The store context created by `createSweetContext`
 - `selector?`: Optional function to extract specific action methods from the store
 
 ### `createConsumer(context, selector)`
@@ -111,19 +111,19 @@ Creates a React hook that provides access to store actions without subscribing t
 Creates a React Consumer component that provides access to store state and actions.
 
 **Parameters:**
-- `context`: The store context created by `createLiteStore`
+- `context`: The store context created by `createSweetContext`
 - `selector?`: Optional function to extract specific values from state
 
 ## Installation
 
 ```bash
-bun install react-lite-store
+bun install react-sweet-context
 ```
 
 ## Performance Considerations
 
 ### Shallow Equality Checking
-React Lite Store uses shallow equality checking to optimize re-renders:
+React SweetContext uses shallow equality checking to optimize re-renders:
 
 ```typescript
 // The following will only trigger a re-render if the reference changes
@@ -136,3 +136,4 @@ Use custom selectors to extract only necessary data:
 ```typescript
 // Only re-renders when count changes, not the entire state object
 const useCount = createHook(store, (state) => state.count);
+```

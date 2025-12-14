@@ -1,7 +1,37 @@
 {
-  "name": "react-lite-store",
-  "module": "index.ts",
-  "type": "module",
+  "name": "react-sweet-context",
+  "version": "2.0.1",
+  "description": "A lightweight React store implementation",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "author": "Hoang Long",
+  "license": "MIT",
+  "keywords": [
+    "react",
+    "store",
+    "redux",
+    "sweet",
+    "lite",
+    "simple",
+    "lightweight"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/longcuxit/react-sweet-context.git"
+  },
+  "scripts": {
+    "build": "tsup"
+  },
   "devDependencies": {
     "@testing-library/react": "^16.3.0",
     "@types/bun": "latest",
@@ -9,9 +39,8 @@
     "@types/react": "^19.2.7",
     "jsdom": "^27.3.0",
     "react": "^19.2.3",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
     "vitest": "^4.0.15"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
   }
 }
