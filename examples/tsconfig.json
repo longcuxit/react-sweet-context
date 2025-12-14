@@ -17,9 +17,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "baseUrl": "./",
-    "paths": {
-      "react-sweet-context": [".."]
-    }
+    "paths": {}
   },
   "include": ["src"]
 }

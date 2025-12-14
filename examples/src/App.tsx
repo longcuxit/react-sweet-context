@@ -1,17 +1,18 @@
-import { Suspense, type FC } from 'react';
-import './styles.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Sidebar from './components/Sidebar';
-import ExampleContent from './components/ExampleContent';
+import { Suspense } from "react";
+import "./styles.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Sidebar from "./components/Sidebar";
+import ExampleContent from "./components/ExampleContent";
 
-const App: FC = () => {
+const App = () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <Router
         future={{
           v7_startTransition: true,
           v7_relativeSplatPath: true,
-        }}>
+        }}
+      >
         <div className="app-container">
           <div className="sidebar">
             <Sidebar />
