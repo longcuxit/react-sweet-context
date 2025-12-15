@@ -1,8 +1,9 @@
-import SimpleLess from "./examples/simple-less";
-import AsyncAction from "./examples/async-action";
-import MultiActions from "./examples/multi-actions";
-import MultiStates from "./examples/multi-states";
-import multiInstance from "./examples/multi-instance";
+import { lazy } from "react";
+const SimpleLess = lazy(() => import("./examples/simple-less"));
+const AsyncAction = lazy(() => import("./examples/async-action"));
+const MultiActions = lazy(() => import("./examples/multi-actions"));
+const MultiStates = lazy(() => import("./examples/multi-states"));
+const multiInstance = lazy(() => import("./examples/multi-instance"));
 
 export const routers: Record<string, ExampleItem> = {
   "simple-less": {
