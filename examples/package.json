@@ -5,13 +5,14 @@
   "main": "src/index.tsx",
   "scripts": {
     "start": "vite",
-    "build": "vite build",
+    "build": "vite build && cp ./dist/index.html ./dist/404.html ",
     "dist": "live-server dist --mount=/react-sweet-context:dist",
     "dev": "vite"
   },
   "dependencies": {
     "prismjs": "^1.30.0",
     "react-dom": "^19.2.3",
+    "react-markdown": "^10.1.0",
     "react-router-dom": "^6.8.0",
     "react-sweet-context": "^2.0.5"
   },
