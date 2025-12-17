@@ -1,4 +1,5 @@
 import { createHook, createSweetContext } from "react-sweet-context";
+import { randomWord } from "./utls";
 
 type User = { name: string; age: number };
 
@@ -32,7 +33,7 @@ export const MultiState = () => {
           Reset User
         </button>
 
-        <button onClick={() => actions.updateUserName("Bob")}>
+        <button onClick={() => actions.updateUserName(randomWord())}>
           Update Name
         </button>
 
