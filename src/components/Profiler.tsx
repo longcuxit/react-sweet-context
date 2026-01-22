@@ -44,7 +44,7 @@ const ProfilerDetail = ({ context }: { context: StoreContext<any, any> }) => {
   const counter = useContext(counterContext);
   const count = useSyncExternalStore(
     counter.listen.bind(counter),
-    () => counter.value
+    () => counter.value,
   );
   return (
     <div className="console">

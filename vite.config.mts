@@ -8,7 +8,10 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     base: env.VITE_BASE_URL,
     resolve: {
-      alias: { src: path.resolve("./src") },
+      alias: {
+        src: path.resolve("./src"),
+        "react-sweet-context": path.resolve("./lib"),
+      },
     },
   };
 });
