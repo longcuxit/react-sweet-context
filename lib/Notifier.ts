@@ -10,17 +10,16 @@ export class Notifier<Args extends unknown[] = []> {
   /**
    * A Set of listener functions that will be called when the notify method is invoked.
    * Using Set provides O(1) performance for add/delete operations and prevents duplicates.
-   * @private
    */
-  private _listeners: Set<NotifierListener<Args>> = new Set();
+  #listeners: Set<NotifierListener<Args>> = new Set();
 
   /**
    * Notifies all listeners by calling their respective callback functions.
-   * @protected
+   * @internal This method is public for subclass access but should not be called externally.
    */
-  protected notify(...args: Args) {
-    if (!this._listeners.size) return;
-    this._listeners.forEach((listener) => listener.apply(this, args));
+  notify(...args: Args) {
+    if (!this.#listeners.size) return;
+    this.#listeners.forEach((listener) => listener.apply(this, args));
   }
 
   /**
@@ -29,7 +28,7 @@ export class Notifier<Args extends unknown[] = []> {
    * @returns A function that removes the listener when called.
    */
   listen(listener: NotifierListener<Args>): () => void {
-    this._listeners.add(listener);
+    this.#listeners.add(listener);
     return () => this.unListen(listener);
   }
   /**
@@ -37,13 +36,13 @@ export class Notifier<Args extends unknown[] = []> {
    * @param listener The listener function to remove.
    */
   unListen(listener: NotifierListener<Args>) {
-    this._listeners.delete(listener);
+    this.#listeners.delete(listener);
   }
 
   /**
    * Clears all listeners from the listener set.
    */
   dispose() {
-    this._listeners.clear();
+    this.#listeners.clear();
   }
 }

@@ -1,29 +1,37 @@
 {
   "name": "react-sweet-context",
   "version": "2.0.7",
-  "description": "A lightweight React store implementation",
+  "description": "A lightweight React store implementation using Context API and useSyncExternalStore",
   "main": "dist/index.js",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
   "exports": {
-    ".": "./dist/index.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
   },
   "files": [
     "dist"
-  ],
-  "workspaces": [
-    "."
   ],
   "author": "Hoang Long",
   "license": "MIT",
   "keywords": [
     "react",
+    "react-context",
+    "state-management",
     "store",
-    "redux",
-    "sweet",
-    "lite",
-    "simple",
-    "lightweight"
+    "hooks",
+    "useSyncExternalStore",
+    "selector",
+    "lightweight",
+    "typescript",
+    "context-api",
+    "react-hooks",
+    "react-state",
+    "redux-alternative"
   ],
   "homepage": "https://longcuxit.github.io/react-sweet-context/",
   "repository": {
@@ -38,27 +46,25 @@
     "dev": "vite"
   },
   "peerDependencies": {
-    "react": "^18.0.0"
-  },
-  "dependencies": {
-    "vite": "^4.3.0",
-    "prismjs": "^1.30.0",
-    "react-dom": "^19.2.3",
-    "react-markdown": "^10.1.0",
-    "react-router-dom": "^6.8.0"
+    "react": "^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
     "@testing-library/react": "^16.3.0",
     "@types/bun": "latest",
     "@types/jsdom": "^27.0.0",
+    "@types/prismjs": "^1.26.5",
     "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.2",
     "jsdom": "^27.3.0",
+    "prismjs": "^1.30.0",
     "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "react-markdown": "^10.1.0",
+    "react-router-dom": "^6.8.0",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.15",
-    "@types/prismjs": "^1.26.5",
-    "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^5.1.2"
+    "vite": "^4.3.0",
+    "vitest": "^4.0.15"
   }
 }

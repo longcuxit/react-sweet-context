@@ -4,15 +4,15 @@ import { Notifier } from "./Notifier";
  * A class that notifies observers when its value changes.
  */
 export class ValueChanged<T> extends Notifier<[T]> {
-  private _value: T;
+  #value: T;
 
   /**
    * Sets a new value for this instance, and notifies all observers if the value has changed.
    * @param newValue The new value to set.
    */
   set value(newValue: T) {
-    if (newValue === this._value) return;
-    this.notify((this._value = newValue));
+    if (newValue === this.#value) return;
+    this.notify((this.#value = newValue));
   }
 
   setValue(newValue: T) {
@@ -24,7 +24,7 @@ export class ValueChanged<T> extends Notifier<[T]> {
    * @returns The current value.
    */
   get value() {
-    return this._value;
+    return this.#value;
   }
 
   /**
@@ -33,6 +33,6 @@ export class ValueChanged<T> extends Notifier<[T]> {
    */
   constructor(initValue: T) {
     super();
-    this._value = initValue;
+    this.#value = initValue;
   }
 }
